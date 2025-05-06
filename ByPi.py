@@ -2345,7 +2345,7 @@ elif mode == "Analyse et rapport":
         recuperer_dates()
         
         # Exécution de la fonction pour test
-        infos = infos_perimetre()
+        
         afficher_lien_gtb()
         graphe_analyse_plage_fonctionnement()
         by_analyse()
