@@ -836,7 +836,7 @@ def graphe_analyse_plage_fonctionnement():
             commentaire_base = (
                 f"Les mesures du <b><span > {colonne_p10} </span></b>, ont enregistré des consommations d'une somme de <b><span style='color:red'>{consommation_hors_plages_formatee} kWh</span></b> sur la période du "
                 f"{cal_debut_dt.date()} au {cal_fin_dt.date()} hors des plages "
-                f"de fonctionnement ({plages_str})."
+                f"de fonctionnement par défaut({plages_str})."
             )
 
             afficher_zone = st.checkbox("Ajouter ou modifier un commentaire", value=True)
