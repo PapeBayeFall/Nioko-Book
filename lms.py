@@ -1,10 +1,4 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.express as px
-
 
 # Dictionnaire de la structure LMS
 menu_structure = {
@@ -71,15 +65,74 @@ menu_structure = {
 }
 
 st.set_page_config(page_title="LMS Interface", layout="wide")
+
+st.markdown("""
+    <style>
+    .menu-container {
+        display: flex;
+        justify-content: flex-start;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    .menu-selected {
+        color: #1f77b4;
+        border-bottom: 2px solid #1f77b4;
+        padding-bottom: 4px;
+    }
+    .menu-unselected {
+        color: black;
+        padding-bottom: 4px;
+        cursor: pointer;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("📚 Interface LMS - Tableau de Bord")
 
-# Barre horizontale de menu principal
-main_menu = st.selectbox("Choisir un menu", list(menu_structure.keys()), key="main")
+if "selected_menu" not in st.session_state:
+    st.session_state.selected_menu = list(menu_structure.keys())[0]
 
-# Sous-menu horizontal avec radio boutons
-sub_menu = st.radio("Choisir une section", menu_structure[main_menu], horizontal=True, key="sub")
+st.markdown('<div class="menu-container">', unsafe_allow_html=True)
+cols = st.columns(len(menu_structure))
 
-# Affichage du contenu (placeholder)
-st.markdown("---")
-st.subheader(f"🧭 {main_menu} > {sub_menu}")
-st.info(f"🔧 Contenu de la section : **{sub_menu}**. À implémenter...")
+for i, (col, menu) in enumerate(zip(cols, menu_structure.keys())):
+    with col:
+        if st.button(menu, key=f"btn_{i}"):
+            st.session_state.selected_menu = menu
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Affichage des sous-menus
+selected_menu = st.session_state.selected_menu
+st.subheader(f"📂 Sous-menus de : {selected_menu}")
+
+for submenu in menu_structure[selected_menu]:
+    with st.expander(f"📁 {submenu}"):
+        if selected_menu == "Gestion des Formations":
+            if submenu == "Catalogue des formations":
+                st.write("Liste des formations disponibles :")
+                st.table({"Titre": ["Python avancé", "Introduction à la cybersécurité"], "Durée": ["3 jours", "2 jours"]})
+
+            elif submenu == "Création de sessions":
+                st.write("Créer une nouvelle session de formation :")
+                with st.form("session_form"):
+                    nom = st.text_input("Nom de la session")
+                    date = st.date_input("Date")
+                    formateur = st.text_input("Nom du formateur")
+                    submitted = st.form_submit_button("Créer")
+                    if submitted:
+                        st.success(f"Session '{nom}' créée pour le {date} avec le formateur {formateur}.")
+
+            elif submenu == "Suivi des inscriptions":
+                st.write("Suivi des inscriptions aux sessions en cours")
+                st.dataframe({"Nom": ["Alice", "Bob"], "Session": ["Python avancé", "Cybersécurité"]})
+
+            elif submenu == "Évaluation des sessions":
+                st.write("Rapports d'évaluation :")
+                st.write("- Session Python : 4.5/5")
+                st.write("- Session Cybersécurité : 4.2/5")
+        else:
+            st.write(f"Contenu à implémenter pour la section **{submenu}**")
